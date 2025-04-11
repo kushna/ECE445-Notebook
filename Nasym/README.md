@@ -3,6 +3,7 @@
 - [Nasym Worklog](#nasym-worklog)
 - [2025-02-07 - Testing Triboelectric Pressure Sensor](#2025-02-07---testing-triboelectric-pressure-sensor)
 - [2025-02-22 - Further Testing of Pressure Sensor and Voltage Divider](#2025-02-22---further-testing-of-pressure-sensor-and-voltage-divider)
+- [2025-04-10 - Testing Bluetooth Latency](#2025-04-10---testing-bluetooth-latency)
 
 # 2025-02-07 - Testing Triboelectric Pressure Sensor 
 
@@ -22,3 +23,10 @@ The aim of this meeting was to determine the max voltage and normal voltage rang
 The first setup was simply an oscilliscope hooked directly to the sensor. The sensor was placed on the ground so we could step on it. Under heavy load, the sensor reached a max voltage of 70 V. Under normal load it usually stayed around 10-20 V. 
 
 Next, we tested our voltage divider. We measured the voltage at the sensor with one channel of the oscilliscope and used another channel to measure the divided voltage. With this setup, we could never get both channels to read simaltaneously: only one would work at a time. However, just by observing the voltage after the divider, it seemed to be about the same as without, so we hypothesized that it did not work correctly. We then tested using two different oscilliscopes and replacing the sensor with a wave function generator. The voltage was divided correctly in this setup. Due to these results, we determined that the sensor needs one voltage divider for each terminal because it works on differential. 
+
+
+# 2025-04-10 - Testing Bluetooth Latency 
+
+Each ESP32 is structured as a BLE server. A laptop running a web app is the BLE client. To start collecting data, both servers are sent a start command from the client. The original hope was that the time at which the BLE servers recieve the signals is approximately the same (<12ms as described in high-level requirements). To test the latency, I conected a button to both the ESP32's. Each ESP32 starts a timer when the start command is sent and sends the time at which the button is clicked. Across about 30 tests, the latency was observed to be 6-30ms. This means we will need to create a synchronization feature.
+
+To do this, we will attach a wire to each ESP32 that is connected to a IO pin and ground. There will be a button on one of the ESP32's that when pressed, connects the ground and IO pin. The web app will tell the user to connect the ESP32's together using the wires mentioned and click the button. Once the button is clicked, the ESP32's will start the timer. This will ensure that they are synchronized almost exactly.
